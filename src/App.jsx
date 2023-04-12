@@ -6,9 +6,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" element={<Register />} />
+        <Route path="/register/:id" element={<Register />} />
         <Route path="/chose-leader" element={<SelectLeader />} />
         <Route path="/test" element={<Test />} />
+        <Route path="*" element={<h1>Ups, parece que la ruta no existe</h1>} />
       </Routes>
     </BrowserRouter>
   );

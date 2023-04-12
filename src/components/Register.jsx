@@ -20,7 +20,7 @@ const Title = styled.span`
   line-height: 120%;
   text-align: center;
   color: #7a00c6;
-  width: 360px;
+  width: 500px;
   margin-bottom: 18px;
 `;
 

@@ -62,8 +62,8 @@ const Test = function () {
       <Unique_option
         body={body}
         id={id}
-        min_text={max_text}
-        max_text={min_text}
+        min_text={min_text}
+        max_text={max_text}
         list={list}
       />
       <Text body={body} id={id} />

@@ -31,6 +31,19 @@ const Input = styled.input`
 
   color: #1c1c1a;
 `;
+const StyledArea = styled.textarea`
+  padding: 5px;
+  border: 1px solid #7a00c6;
+  border-radius: 8px;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 150%;
+  /* identical to box height, or 27px */
+
+  color: #1c1c1a;
+`;
 
 const Field = function ({ ...props }) {
   return (
@@ -38,6 +51,14 @@ const Field = function ({ ...props }) {
       <Label>{props.name ? props.name : props.id}</Label>
       <Input {...props} />
       <Error>{props.errors}</Error>
+    </Container>
+  );
+};
+
+export const TextArea = function ({ ...props }) {
+  return (
+    <Container>
+      <StyledArea {...props} />
     </Container>
   );
 };

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Unique_option } from "./questions";
+import { Text, Unique_option } from "./questions";
 import Button from "./button";
 import StatusBar from "./status-bar";
 const SubContainer = styled.div`
@@ -32,6 +32,11 @@ const Logo = styled.img`
   left: -170px;
 `;
 const Test = function () {
+  const body =
+    "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos";
+  const min_text = "calificación mínima";
+  const max_text = "calificación máxima";
+  const id = 1;
   const advance = 0.1;
   const list = [
     { name: 1, value: 10 },
@@ -55,14 +60,13 @@ const Test = function () {
       </SubContainer>
 
       <Unique_option
-        body={
-          "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos"
-        }
-        id={1}
-        min_text={"menos satisfecho"}
-        max_text={"mas satisfecho"}
+        body={body}
+        id={id}
+        min_text={max_text}
+        max_text={min_text}
         list={list}
       />
+      <Text body={body} id={id} />
     </Container>
   );
 };

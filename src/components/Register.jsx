@@ -29,7 +29,18 @@ const Register = function () {
   const [send, setSend] = useState(false);
   const title = "Encuesta de medicion de liderazgo";
   const handleClick = function (e) {
-    setSend(true);
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: '{"email":"univcotincodeable@gmail.com","test_id":1}',
+    };
+
+    fetch("http://127.0.0.1:3000/api/v1/magic-link", options)
+      .then((response) => response.json())
+      .then((response) => setSend(true))
+      .catch((err) => console.error(err));
   };
   const handleButton = function (e) {
     const value = e.target.value;

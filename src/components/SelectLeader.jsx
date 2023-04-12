@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
-import Button from "./components/button";
-import Select from "./components/select";
+import Button from "./button";
+import Select from "./select";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@ const Logo = styled.img`
 const Paragraph = styled.p`
   width: 680px;
 `;
-const Test = function () {
+const SelectLeader = function () {
   const [errors, setErros] = useState("Completa este campo");
   const handleClick = function (e) {
     window.location.href = "/test";
@@ -50,4 +50,4 @@ const Test = function () {
     </Container>
   );
 };
-export default Test;
+export default SelectLeader;

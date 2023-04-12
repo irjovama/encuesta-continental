@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Field from "./components/field";
-import Button from "./components/button";
+import Field from "./field";
+import Button from "./button";
 const Container = styled.div`
   display: flex;
   flex-direction: column;

@@ -29,22 +29,26 @@ const Option = styled.button`
   text-align: center;
   cursor: pointer;
 `;
-const Unique_option = function ({ id, body, min_text, max_text, list }) {
-  const [select, setSelect] = useState(null);
+const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
+  const [select, setSelect] = useState("");
   const Qid = "Q_" + id;
   const handleClick = function (e) {
-    setSelect(e.target.dataset.value);
+    const newValue = e.target.dataset.value;
+    const name = e.target.parentElement.parentElement.children[0].name;
+    setSelect(newValue);
+    onSet({ name: name, value: newValue });
   };
   return (
     <Container>
-      <input type="hidden" id={Qid} value={select} />
+      <input type="hidden" name={Qid} id={Qid} value={select} />
       <Paragraph>
-        {Qid}.- {body}
+        <strong>{Qid}</strong>.- {body}
       </Paragraph>
       <Options>
         <p>{min_text}</p>
         {list.map((v) => (
           <Option
+            type="button"
             key={v.name}
             data-name={v.name}
             data-value={v.value}

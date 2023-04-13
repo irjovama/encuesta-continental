@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Field from "./field";
 import Button from "./button";
@@ -29,8 +29,15 @@ const Register = function () {
   const [errors, setErrors] = useState("Please enter a Email");
   const [send, setSend] = useState(false);
   const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
   const params = useParams();
-  const title = "Encuesta de medicion de liderazgo";
+  useEffect(() => {
+    const options = { method: "GET" };
+    fetch("http://127.0.0.1:3000/api/v1/tests/1", options)
+      .then((response) => response.json())
+      .then((response) => setTitle(response.title))
+      .catch((err) => console.error(err));
+  }, []);
   const handleClick = function (e) {
     e.target.style.display = "none";
     const options = {

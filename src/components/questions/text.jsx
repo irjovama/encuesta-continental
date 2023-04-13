@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { TextArea } from "../field";
+import { useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,8 @@ const Options = styled.div`
   align-items: center;
 `;
 
-const Text = function ({ id, body }) {
+const Text = function ({ id, body, onSet }) {
+  const [value, setValue] = useState("");
   const Qid = "Q_" + id;
 
   return (
@@ -28,7 +30,15 @@ const Text = function ({ id, body }) {
         {Qid}.- {body}
       </Paragraph>
       <Options>
-        <TextArea cols={70} id={Qid} />
+        <TextArea
+          cols={70}
+          id={Qid}
+          name={Qid}
+          onKeyDown={(e) => {
+            setValue(e.target.value);
+            onSet({ name: Qid, value: value });
+          }}
+        ></TextArea>
       </Options>
     </Container>
   );

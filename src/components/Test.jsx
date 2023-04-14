@@ -3,7 +3,7 @@ import { Text, Unique_option } from "./questions";
 import Button from "./button";
 import StatusBar from "./status-bar";
 import { useState, useEffect } from "react";
-import { getOptions, getQuestionsFromTest } from "../services/encuestaServices";
+import { createAnswer, getOptions, getQuestionsFromTest } from "../services/encuestaServices";
 
 const SubContainer = styled.div`
   display: flex;
@@ -54,32 +54,28 @@ const Scroll = styled.div`
 `;
 const Test = function () {
   const test_id = 1
+  const user_id = 2
   const [advance, setAdvance] = useState(0);
   const [results, setResults] = useState([]);
-  const [questions, setQuestions] = useState(null);
+  const [questions, setQuestions] = useState({question_array: null, question_total: 0});
   const [options , setOptions] = useState(null);
   useEffect(() => {
     getOptions().then((data)=> setOptions(data)).catch(console.log);
-    getQuestionsFromTest(test_id).then((data)=> setQuestions(data))
+    getQuestionsFromTest(test_id).then((data)=> setQuestions({question_array: data, question_total: data.length}))
     .catch(console.log);
   }, [])
-  const total_questions = 4;
-  const body =
-    "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos";
-  const min_text = "calificación mínima";
-  const max_text = "calificación máxima";
-  const id = 1;
+
   const list = [
-    { name: 1, value: 10 },
-    { name: 2, value: 9 },
-    { name: 3, value: 8 },
-    { name: 4, value: 7 },
-    { name: 5, value: 6 },
-    { name: 6, value: 5 },
-    { name: 7, value: 4 },
-    { name: 8, value: 3 },
-    { name: 9, value: 2 },
-    { name: 10, value: 1 },
+    { name: 1, value: 1 },
+    { name: 2, value: 2 },
+    { name: 3, value: 3 },
+    { name: 4, value: 4 },
+    { name: 5, value: 5 },
+    { name: 6, value: 6 },
+    { name: 7, value: 7 },
+    { name: 8, value: 8 },
+    { name: 9, value: 9 },
+    { name: 10, value: 10 },
   ];
   const handleAdvance = function (v) {
     const newR = Object.assign(results);
@@ -100,7 +96,7 @@ const Test = function () {
       }
     }
 
-    setAdvance(results.length / total_questions);
+    setAdvance(results.length / questions.question_total);
   };
   return (
     <Container>
@@ -113,49 +109,40 @@ const Test = function () {
             formValues[key] = value;
           }
           console.log("Valores enviados:", formValues);
-        }}
+          Object.keys(formValues).forEach(key=>{
+            setTimeout(()=> {
+
+            const body = { 
+              user_id: user_id,
+              question_id: Number(key.substring(2)),
+              evaluation: formValues[key]
+            };
+            console.log(body);
+            createAnswer(body).then((u)=> console.log("Succesfully created with id: "+u.id)).catch((e)=>console.log(e));
+          }
+        , 1500 )
+        
+        }
+      )}}
         id="myForm"
       >
         <Scroll>
-          {(questions === null) || (options === null) ? "Loading" : 
-          questions.map((question)=> question.question_type === "points" ?   
+          {(questions.question_array === null) || (options === null) ? "Loading" : 
+          questions.question_array.map((question)=> question.question_type === "points" ?   
           (  
           <Unique_option min_text = {options.find(option => option.id === question.option_id).lower_option}
           max_text = {options.find(option => option.id === question.option_id).upper_option}
           key={question.id} 
-          id={question.index} 
+          id={question.id} 
+          index= {question.index}
           body={question.title} 
           list={list} 
           onSet={handleAdvance}/>
           ) : 
-          ( <Text key={question.id} body={question.title} id={question.index} onSet={handleAdvance} />)
+          ( <Text key={question.id} body={question.title} id={question.id} index={question.index} onSet={handleAdvance} />)
           )
           }
-          <Unique_option
-            body={body}
-            id={id}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Unique_option
-            body={body}
-            id={id + 1}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Unique_option
-            body={body}
-            id={id + 2}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Text body={body} id={id + 3} onSet={handleAdvance} />
+
         </Scroll>
         <Fixed>
           <Logo src="../src/images/mini-logo.jpg" />

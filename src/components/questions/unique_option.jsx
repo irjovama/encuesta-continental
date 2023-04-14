@@ -34,9 +34,10 @@ const Option = styled.button`
   text-align: center;
   cursor: pointer;
 `;
-const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
+const Unique_option = function ({ index, id, body, min_text, max_text, list, onSet }) {
   const [select, setSelect] = useState("");
   const Qid = "Q_" + id;
+  const Qindex = "Q_" + index;
   const handleClick = function (e) {
     const newValue = e.target.dataset.value;
     const name = e.target.parentElement.parentElement.children[0].name;
@@ -45,9 +46,9 @@ const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
   };
   return (
     <Container>
-      <input type="hidden" name={Qid} id={Qid} value={select} />
+      <input type="hidden" name={Qid} id={id} value={select} />
       <Paragraph>
-        <strong>{Qid}</strong>.- {body}
+        <strong>{Qindex}</strong>.- {body}
       </Paragraph>
       <Options>
         <MinMax>{min_text}</MinMax>

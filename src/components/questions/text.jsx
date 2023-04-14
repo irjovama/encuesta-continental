@@ -22,23 +22,24 @@ const Options = styled.div`
   margin-right: auto;
 `;
 
-const Text = function ({ id, body, onSet }) {
+const Text = function ({ index, id, body, onSet }) {
   const [value, setValue] = useState("");
+  const Qindex = "Q_" + index;
   const Qid = "Q_" + id;
 
   return (
     <Container>
       <Paragraph>
-        {Qid}.- {body}
+      <strong>{Qindex}</strong>.- {body}
       </Paragraph>
       <Options>
         <TextArea
           cols={70}
-          id={Qid}
+          id={id}
           name={Qid}
           onKeyDown={(e) => {
             setValue(e.target.value);
-            onSet({ name: Qid, value: value });
+            onSet({ name: id, value: value });
           }}
         ></TextArea>
       </Options>

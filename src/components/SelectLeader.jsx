@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import Button from "./button";
 import Select from "./select";
+import { useEffect } from "react";
+import { getTest } from "../services/encuestaServices";
 const Container = styled.div`
   display: flex;
   flex-direction: column;

@@ -109,21 +109,25 @@ const Test = function () {
             formValues[key] = value;
           }
           console.log("Valores enviados:", formValues);
-          Object.keys(formValues).forEach(key=>{
-            setTimeout(()=> {
-
-            const body = { 
-              user_id: user_id,
-              question_id: Number(key.substring(2)),
-              evaluation: formValues[key]
-            };
-            console.log(body);
-            createAnswer(body).then((u)=> console.log("Succesfully created with id: "+u.id)).catch((e)=>console.log(e));
+          async function createAnswers(formValues, user_id) {
+            for (const key of Object.keys(formValues)) {
+              const body = {
+                user_id: user_id,
+                question_id: Number(key.substring(2)),
+                evaluation: formValues[key]
+              };
+              try {
+                const u = await 
+                    createAnswer(body) 
+                ;
+                console.log("Successfully created with id: " + u.id);
+              } catch (e) {
+                console.log(e);
+              }
+            }
           }
-        , 1800 )
-        
-        }
-      )}}
+          createAnswers(formValues, user_id)
+        }}
         id="myForm"
       >
         <Scroll>

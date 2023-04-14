@@ -1,6 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+const MinMax = styled.p`
+  width: 120px;
+  text-align: center;
+`
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,7 +50,7 @@ const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
         <strong>{Qid}</strong>.- {body}
       </Paragraph>
       <Options>
-        <p>{min_text}</p>
+        <MinMax>{min_text}</MinMax>
         {list.map((v) => (
           <Option
             type="button"
@@ -58,7 +63,7 @@ const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
             {v.name}
           </Option>
         ))}
-        <p>{max_text}</p>
+        <MinMax>{max_text}</MinMax>
       </Options>
     </Container>
   );

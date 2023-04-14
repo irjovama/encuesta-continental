@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { Text, Unique_option } from "./questions";
 import Button from "./button";
 import StatusBar from "./status-bar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getOptions, getQuestionsFromTest } from "../services/encuestaServices";
+
 const SubContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -51,8 +53,16 @@ const Scroll = styled.div`
   padding-bottom: 100px;
 `;
 const Test = function () {
+  const test_id = 1
   const [advance, setAdvance] = useState(0);
   const [results, setResults] = useState([]);
+  const [questions, setQuestions] = useState(null);
+  const [options , setOptions] = useState(null);
+  useEffect(() => {
+    getOptions().then((data)=> setOptions(data)).catch(console.log);
+    getQuestionsFromTest(test_id).then((data)=> setQuestions(data))
+    .catch(console.log);
+  }, [])
   const total_questions = 4;
   const body =
     "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos";
@@ -107,6 +117,20 @@ const Test = function () {
         id="myForm"
       >
         <Scroll>
+          {(questions === null) || (options === null) ? "Loading" : 
+          questions.map((question)=> question.question_type === "points" ?   
+          (  
+          <Unique_option min_text = {options.find(option => option.id === question.option_id).lower_option}
+          max_text = {options.find(option => option.id === question.option_id).upper_option}
+          key={question.id} 
+          id={question.index} 
+          body={question.title} 
+          list={list} 
+          onSet={handleAdvance}/>
+          ) : 
+          ( <Text key={question.id} body={question.title} id={question.index} onSet={handleAdvance} />)
+          )
+          }
           <Unique_option
             body={body}
             id={id}

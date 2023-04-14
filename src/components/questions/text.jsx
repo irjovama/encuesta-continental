@@ -18,6 +18,8 @@ const Paragraph = styled.p`
 const Options = styled.div`
   display: flex;
   align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const Text = function ({ id, body, onSet }) {

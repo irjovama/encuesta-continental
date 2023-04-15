@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import Button from "./button";
 import Select from "./select";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,6 +20,32 @@ const Paragraph = styled.p`
 `;
 const SelectLeader = function () {
   const [errors, setErros] = useState("Completa este campo");
+  const [leaders, setLeaders] = useState([]);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  sessionStorage.setItem("token", query.get("token"));
+  useEffect(() => {
+    const options = { method: "GET" };
+    fetch(
+      "http://127.0.0.1:3000/api/v1/user_tests/" + query.get("token"),
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        setLeaders(
+          response.map((test) => {
+            return (
+              test.leader.name +
+              " " +
+              test.leader.middlename +
+              " " +
+              test.leader.lastname
+            );
+          })
+        );
+      })
+      .catch((err) => console.error(err));
+  }, []);
   const handleClick = function (e) {
     window.location.href = "/test";
   };
@@ -29,7 +57,6 @@ const SelectLeader = function () {
       setErros("");
     }
   };
-  const leaders = ["Irving Jones Valdes Maciel", "Olga Lidia Calderon Rosas"];
   const text =
     "Volutpat consequat bibendum nisl dictum quisque. Vel habitant dictum nibh scelerisque leo sed in ut ac. Ultrices eu nisl volutpat feugiat amet lorem nisi duis amet. Lectus dui leo gravida risus nunc metus pellentesque quam nullam. Ultricies vitae id enim feugiat sed id. Sed aliquam magna felis eu fames justo senectus tincidunt.";
   return (

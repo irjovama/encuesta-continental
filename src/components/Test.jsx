@@ -3,6 +3,7 @@ import { Text, Unique_option } from "./questions";
 import Button from "./button";
 import StatusBar from "./status-bar";
 import { useState } from "react";
+import { useEffect } from "react";
 const SubContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,24 +54,50 @@ const Scroll = styled.div`
 const Test = function () {
   const [advance, setAdvance] = useState(0);
   const [results, setResults] = useState([]);
-  const total_questions = 4;
-  const body =
-    "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos";
-  const min_text = "calificación mínima";
-  const max_text = "calificación máxima";
-  const id = 1;
-  const list = [
-    { name: 1, value: 10 },
-    { name: 2, value: 9 },
-    { name: 3, value: 8 },
-    { name: 4, value: 7 },
-    { name: 5, value: 6 },
-    { name: 6, value: 5 },
-    { name: 7, value: 4 },
-    { name: 8, value: 3 },
-    { name: 9, value: 2 },
-    { name: 10, value: 1 },
-  ];
+  const [questions, setQuestions] = useState([]);
+  const token = sessionStorage.getItem("token");
+  useEffect(() => {
+    const options = { method: "GET" };
+    fetch(
+      "http://127.0.0.1:3000/api/v1/user_tests/" + token + "/questions",
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => setQuestions(response))
+      .catch((err) => console.error(err));
+  }, []);
+
+  // const body =
+  //   "Esto esun testo de una pregunta con algo de contenido mas largo para que se pueda ver mejor los estilos";
+  // const min_text = "calificación mínima";
+  // const max_text = "calificación máxima";
+  // const id = 1;
+  const list = {
+    points: [
+      { name: 1, value: 1 },
+      { name: 2, value: 2 },
+      { name: 3, value: 3 },
+      { name: 4, value: 4 },
+      { name: 5, value: 5 },
+      { name: 6, value: 6 },
+      { name: 7, value: 7 },
+      { name: 8, value: 8 },
+      { name: 9, value: 9 },
+      { name: 10, value: 10 },
+    ],
+    points_reverse: [
+      { name: 1, value: 10 },
+      { name: 2, value: 9 },
+      { name: 3, value: 8 },
+      { name: 4, value: 7 },
+      { name: 5, value: 6 },
+      { name: 6, value: 5 },
+      { name: 7, value: 4 },
+      { name: 8, value: 3 },
+      { name: 9, value: 2 },
+      { name: 10, value: 1 },
+    ],
+  };
   const handleAdvance = function (v) {
     const newR = Object.assign(results);
     if (v.value != "") {
@@ -90,48 +117,83 @@ const Test = function () {
       }
     }
 
-    setAdvance(results.length / total_questions);
+    setAdvance(results.length / questions.length);
   };
   return (
     <Container>
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           const formData = new FormData(e.target);
           const formValues = {};
           for (let [key, value] of formData.entries()) {
             formValues[key] = value;
+            const options = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body:
+                '{"user_id":1,"question_id":' +
+                key.split("_")[1] +
+                ',"evaluation":"' +
+                value +
+                '"}',
+            };
+            try {
+              const response = await fetch(
+                "http://127.0.0.1:3000/api/v1/user_questions",
+                options
+              );
+              const data = await response.json();
+              console.log(data);
+            } catch (e) {
+              console.error(e);
+            }
           }
-          console.log("Valores enviados:", formValues);
+          //marcar como completado en user_test
+          sessionStorage.clear();
+          document.location.href = "finished";
         }}
         id="myForm"
       >
         <Scroll>
-          <Unique_option
-            body={body}
-            id={id}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Unique_option
-            body={body}
-            id={id + 1}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Unique_option
-            body={body}
-            id={id + 2}
-            min_text={min_text}
-            max_text={max_text}
-            list={list}
-            onSet={handleAdvance}
-          />
-          <Text body={body} id={id + 3} onSet={handleAdvance} />
+          {questions.map((q) => {
+            if (q.type === "points") {
+              return (
+                <Unique_option
+                  body={q.title}
+                  key={q.id}
+                  id={q.id}
+                  min_text={q.options.lower}
+                  max_text={q.options.upper}
+                  list={list.points}
+                  onSet={handleAdvance}
+                />
+              );
+            }
+            if (q.type === "points_reverse") {
+              return (
+                <Unique_option
+                  body={q.title}
+                  id={q.id}
+                  key={q.id}
+                  min_text={q.options.upper}
+                  max_text={q.options.lower}
+                  list={list.points_reverse}
+                  onSet={handleAdvance}
+                />
+              );
+            }
+            if (q.type === "text_input") {
+              return (
+                <Text
+                  body={q.title}
+                  id={q.id}
+                  key={q.id}
+                  onSet={handleAdvance}
+                />
+              );
+            }
+          })}
         </Scroll>
         <Fixed>
           <Logo src="../src/images/mini-logo.jpg" />

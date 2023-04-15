@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Field from "./field";
 import Button from "./button";
 import { useParams } from "react-router-dom";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,16 +31,29 @@ const Register = function () {
   const [send, setSend] = useState(false);
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
+  const [load, setLoad] = useState(undefined);
   const params = useParams();
   useEffect(() => {
-    const options = { method: "GET" };
-    fetch("http://127.0.0.1:3000/api/v1/tests/1", options)
-      .then((response) => response.json())
-      .then((response) => setTitle(response.title))
-      .catch((err) => console.error(err));
+    try {
+      const options = { method: "GET" };
+      fetch("http://127.0.0.1:3000/api/v1/tests/" + params["id"], options)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response?.title) {
+            setTitle(response.title);
+            setLoad(true);
+          } else {
+            setLoad(false);
+          }
+        })
+        .catch((err) => setLoad(false));
+    } catch (error) {
+      setLoad(false);
+    }
   }, []);
   const handleClick = function (e) {
     e.target.style.display = "none";
+    document.querySelector('[type="email"]').disabled = true;
     const options = {
       method: "POST",
       headers: {
@@ -56,9 +70,10 @@ const Register = function () {
         } else {
           setErrors(response.errors);
           e.target.style.display = "";
+          document.querySelector('[type="email"]').disabled = false;
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Error Irving", err));
   };
   const handleInput = function (e) {
     setEmail(e.target.value);
@@ -73,7 +88,13 @@ const Register = function () {
   };
   return (
     <Container>
-      {send ? (
+      {load == false ? (
+        <>
+          <Image src="../src/images/logo.jpg" />
+          <Title>No encontrado</Title>
+          <p>El link proporcionado no pertenece a ninguna encuesta en curso</p>
+        </>
+      ) : send ? (
         <>
           <Image src="../src/images/logo.jpg" />
           <Title>Correo enviado</Title>
@@ -86,7 +107,7 @@ const Register = function () {
       ) : (
         <>
           <Image src="../src/images/logo.jpg" />
-          <Title>{title}</Title>
+          <Title>{title === "" ? "..." : title}</Title>
           <Field
             type="email"
             placeholder="email@domain.com"

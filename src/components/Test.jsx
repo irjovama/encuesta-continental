@@ -16,7 +16,7 @@ const Container = styled.div`
   flex-direction: column;
   margin: auto;
   gap: 34px;
-  width: 680px;
+  width: 800px;
 
   font-family: "Poppins";
   font-style: normal;

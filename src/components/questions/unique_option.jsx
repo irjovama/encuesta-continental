@@ -5,6 +5,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  border-bottom: solid;
 `;
 const Paragraph = styled.p`
   font-family: "Poppins";
@@ -29,6 +30,17 @@ const Option = styled.button`
   text-align: center;
   cursor: pointer;
 `;
+const OptionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const Poption = styled.div`
+  width: 200px;
+  text-align: justify;
+  font-size: medium;
+  margin: 1rem;
+`;
 const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
   const [select, setSelect] = useState("");
   const Qid = "Q_" + id;
@@ -44,8 +56,9 @@ const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
       <Paragraph>
         <strong>{Qid}</strong>.- {body}
       </Paragraph>
+      <OptionsContainer></OptionsContainer>
       <Options>
-        <p>{min_text}</p>
+        <Poption>{min_text}</Poption>
         {list.map((v) => (
           <Option
             type="button"
@@ -58,7 +71,7 @@ const Unique_option = function ({ id, body, min_text, max_text, list, onSet }) {
             {v.name}
           </Option>
         ))}
-        <p>{max_text}</p>
+        <Poption>{max_text}</Poption>
       </Options>
     </Container>
   );

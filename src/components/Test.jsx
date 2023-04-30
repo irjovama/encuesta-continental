@@ -63,7 +63,9 @@ const Test = function () {
       options
     )
       .then((response) => response.json())
-      .then((response) => setQuestions(response))
+      .then((response) => {
+        setQuestions(response);
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -126,13 +128,16 @@ const Test = function () {
           e.preventDefault();
           const formData = new FormData(e.target);
           const formValues = {};
+          const user_id = sessionStorage.getItem("user_id");
           for (let [key, value] of formData.entries()) {
             formValues[key] = value;
             const options = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body:
-                '{"user_id":1,"question_id":' +
+                '{"user_id":' +
+                user_id +
+                ',"question_id":' +
                 key.split("_")[1] +
                 ',"evaluation":"' +
                 value +
@@ -150,6 +155,16 @@ const Test = function () {
             }
           }
           //marcar como completado en user_test
+          const options = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: '{"status":1}',
+          };
+          const mytoken = sessionStorage.getItem("token");
+          fetch("http://127.0.0.1:3000/api/v1/user_tests/" + mytoken, options)
+            .then((response) => response.json())
+            .then((response) => console.log(response))
+            .catch((err) => console.error(err));
           sessionStorage.clear();
           document.location.href = "finished";
         }}

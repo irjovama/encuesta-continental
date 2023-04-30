@@ -32,6 +32,7 @@ const SelectLeader = function () {
     )
       .then((response) => response.json())
       .then((response) => {
+        sessionStorage.setItem("user_id", response[0].user_id);
         setLeaders(
           response.map((test) => {
             return (

@@ -11,7 +11,7 @@ function App() {
       <Routes>
         ((token) ?{" "}
         <Route
-          path="/admin/reports/test/:test_id/boss/:boss_id"
+          path="/admin/reports/test/:test_id/leader/:leader_id"
           element={<Reports />}
         />{" "}
         :(

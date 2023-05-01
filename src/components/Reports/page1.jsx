@@ -1,6 +1,10 @@
+import { useParams } from "react-router-dom";
+import { getReport } from "../../utils/store";
 import Graphics from "./graphics";
 import Resume from "./resume";
 import styled from "styled-components";
+import { useState } from "react";
+import { useEffect } from "react";
 const SubTitle = styled.div`
   font-family: "Poppins";
   font-style: normal;
@@ -19,71 +23,57 @@ const Container2 = styled.div`
   justify-content: center;
   margin: 2rem;
 `;
+
 const Page1 = function () {
+  const params = useParams();
+  const [data, setData] = useState({
+    name: "",
+    workers: "",
+    success: "",
+    general_average: "",
+    averages: [],
+  });
+  useEffect(() => {
+    getReport(params.test_id, params.leader_id, 1).then(setData);
+  }, []);
+
   return (
     <>
-      <Resume name="Irving Valdes" workers={4} success={4} qa={"76%"} />
-      <SubTitle>Puntaje por dimensión</SubTitle>
-      <Graphics
-        w={750}
-        h={300}
-        data={[
-          {
-            name: "Entrega de resultados",
-            team: 90,
-          },
-          {
-            name: "Crea vinculos genuinos",
-            team: 95,
-          },
-          {
-            name: "cuestiona y contruye el futuro",
-            team: 98,
-          },
-        ]}
-      />
-      <SubTitle>Auto evaluación vs Evaluación Equipo</SubTitle>
-      <Container2>
-        <Graphics
-          title={"titulo"}
-          w={200}
-          h={300}
-          type={1}
-          data={[
-            {
-              name: "",
-              team: 90,
-              auto: 95,
-            },
-          ]}
-        />
-        <Graphics
-          title={"titulo"}
-          w={200}
-          h={300}
-          type={1}
-          data={[
-            {
-              name: "",
-              team: 90,
-              auto: 95,
-            },
-          ]}
-        />
-        <Graphics
-          title={"titulo"}
-          w={200}
-          h={300}
-          type={1}
-          data={[
-            {
-              name: "",
-              team: 90,
-              auto: 95,
-            },
-          ]}
-        />
-      </Container2>
+      {data?.name != "" ? (
+        <>
+          <Resume
+            name={data.name}
+            workers={data.workers}
+            success={data.success}
+            qa={`${data.general_average}%`}
+          />
+          <SubTitle>Puntaje por dimensión</SubTitle>
+          <Graphics
+            w={750}
+            h={300}
+            data={data.averages.map((a) => {
+              return { name: a.name, team: a.team };
+            })}
+          />
+          <SubTitle>Auto evaluación vs Evaluación Equipo</SubTitle>
+          <Container2>
+            {data.averages.map((item) => {
+              return (
+                <Graphics
+                  key={item.name}
+                  title={item.name}
+                  w={200}
+                  h={300}
+                  type={1}
+                  data={[item]}
+                />
+              );
+            })}
+          </Container2>
+        </>
+      ) : (
+        "Loading..."
+      )}
     </>
   );
 };

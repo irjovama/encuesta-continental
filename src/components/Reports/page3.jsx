@@ -7,6 +7,10 @@ import {
   TitleNumber,
 } from "./components";
 import Graphics from "./graphics";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getReport } from "../../utils/store";
+import { useParams } from "react-router-dom";
 const Container = styled.div``;
 const Container2 = styled.div`
   display: flex;
@@ -16,59 +20,63 @@ const Container2 = styled.div`
   justify-content: center;
   margin: 2rem;
 `;
-const Page3 = function () {
+const Page3 = function ({ data }) {
+  const params = useParams();
+  const [data1, setData1] = useState({
+    name: "",
+    workers: "",
+    success: "",
+    general_average: "",
+    averages: [],
+  });
+  useEffect(() => {
+    getReport(params.test_id, params.leader_id, 1).then(setData1);
+  }, []);
   return (
     <Container>
       <Title>
-        <TitleText>Entrega de resultados</TitleText>
-        <TitleNumber>90%</TitleNumber>
+        <TitleText>{data.name}</TitleText>
+        <TitleNumber>
+          {data1.averages.filter((a) => a.name == data.name).map((e) => e.team)}
+          %
+        </TitleNumber>
       </Title>
       <Paragraph>
-        <ParagraphTitle>Conecta los logros con el proposito</ParagraphTitle>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit
-        veniam rem officiis harum unde beatae quia error recusandae atque,
-        placeat aperiam at temporibus neque asperiores velit consectetur
-        eligendi. Fuga, sapiente? Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Consequuntur reiciendis accusamus, quidem atque
-        voluptatem aut. Mollitia culpa beatae tenetur ratione officia voluptatum
-        dolores id est aliquid quibusdam. Mollitia, iusto nesciunt!
-        <ParagraphTitle>Ejecuta con efectividad</ParagraphTitle>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit
-        veniam rem officiis harum unde beatae quia error recusandae atque,
-        placeat aperiam at temporibus neque asperiores velit consectetur
-        eligendi. Fuga, sapiente? Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Consequuntur reiciendis accusamus, quidem atque
-        voluptatem aut. Mollitia culpa beatae tenetur ratione officia voluptatum
-        dolores id est aliquid quibusdam. Mollitia, iusto nesciunt!
+        <ParagraphTitle>
+          ¿Qué significa haber llegado a esta nivel?
+        </ParagraphTitle>
+        {data.results.map((r) => {
+          return `${r.data} `;
+        })}
       </Paragraph>
       <Container2>
-        <Graphics
-          title={"titulo"}
-          w={200}
-          h={300}
-          type={1}
-          data={[
-            {
-              name: "",
-              team: 90,
-              auto: 95,
-            },
-          ]}
-        />
-        <Graphics
-          title={"titulo"}
-          w={200}
-          h={300}
-          type={1}
-          data={[
-            {
-              name: "",
-              team: 90,
-              auto: 95,
-            },
-          ]}
-        />
+        {data.sub_categories.map((element) => {
+          return (
+            <Graphics
+              key={element.name}
+              title={element.name}
+              w={300}
+              h={300}
+              type={1}
+              data={[
+                {
+                  name: "",
+                  team: element.average,
+                  auto: element.self_average,
+                },
+              ]}
+            />
+          );
+        })}
       </Container2>
+      <Paragraph>
+        <ParagraphTitle>Recomendaciones</ParagraphTitle>
+        {data.sub_categories.map((sc) => {
+          return sc.results.map((r) => {
+            return `${r.data} `;
+          });
+        })}
+      </Paragraph>
     </Container>
   );
 };
